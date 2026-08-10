@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Drone Monitoring</title>
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Main CSS -->
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+    <style>
+
+        /* =========================================
+           DRONE MONITORING PAGE
+        ========================================= */
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(0, 255, 255, 0.20),
+                    transparent 30%
+                ),
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(37, 99, 235, 0.30),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a,
+                    #172554
+                );
+
+            color: white;
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .drone-navbar {
+            background: rgba(2, 6, 23, 0.80);
+
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.15);
+        }
+
+        .drone-navbar .navbar-brand {
+            color: white !important;
+
+            font-size: 21px;
+
+            font-weight: 700;
+        }
+
+
+        /* =========================================
+           PAGE TITLE
+        ========================================= */
+
+        .page-title {
+            font-weight: 700;
+
+            background: linear-gradient(
+                90deg,
+                #22d3ee,
+                #60a5fa
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+
+        /* =========================================
+           GLASS CARDS
+        ========================================= */
+
+        .drone-card {
+
+            background: rgba(255,255,255,0.10);
+
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.18);
+
+            border-radius: 22px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.35);
+
+            color: white;
+
+            transition: 0.3s ease;
+        }
+
+        .drone-card:hover {
+
+            transform: translateY(-4px);
+
+            box-shadow:
+                0 20px 50px rgba(0,0,0,0.45);
+        }
+
+
+        /* =========================================
+           CARD HEADINGS
+        ========================================= */
+
+        .drone-card h4 {
+
+            color: #ffffff;
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+        }
+
+
+        /* =========================================
+           UPLOAD AREA
+        ========================================= */
+
+        .upload-area {
+
+            border: 2px dashed rgba(34,211,238,0.65);
+
+            border-radius: 18px;
+
+            padding: 30px 20px;
+
+            text-align: center;
+
+            background: rgba(34,211,238,0.05);
+
+            transition: 0.3s ease;
+        }
+
+        .upload-area:hover {
+
+            background: rgba(34,211,238,0.10);
+
+            border-color: #22d3ee;
+
+            box-shadow:
+                0 0 25px rgba(34,211,238,0.20);
+        }
+
+
+        .upload-icon {
+
+            font-size: 42px;
+
+            margin-bottom: 10px;
+        }
+
+
+        .upload-text {
+
+            color: #dbeafe;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* =========================================
+           FILE INPUT
+        ========================================= */
+
+        .form-control {
+
+            background: rgba(255,255,255,0.12) !important;
+
+            border: 1px solid rgba(255,255,255,0.20) !important;
+
+            color: white !important;
+
+            border-radius: 10px;
+        }
+
+
+        .form-control::file-selector-button {
+
+            background: #22d3ee;
+
+            color: #020617;
+
+            border: none;
+
+            padding: 8px 15px;
+
+            margin-right: 10px;
+
+            border-radius: 7px;
+
+            font-weight: 600;
+        }
+
+
+        /* =========================================
+           ANALYZE BUTTON
+        ========================================= */
+
+        .analyze-btn {
+
+            width: 100%;
+
+            border: none;
+
+            border-radius: 30px;
+
+            padding: 13px;
+
+            font-weight: 700;
+
+            color: white;
+
+            background: linear-gradient(
+                135deg,
+                #06b6d4,
+                #2563eb
+            );
+
+            transition: 0.3s ease;
+        }
+
+
+        .analyze-btn:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 0 25px rgba(34,211,238,0.55);
+        }
+
+
+        /* =========================================
+           DRONE INFORMATION TABLE
+        ========================================= */
+
+        .drone-info {
+
+            width: 100%;
+
+            margin-bottom: 0;
+
+            border-collapse: collapse;
+        }
+
+
+        .drone-info tr {
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.12);
+        }
+
+
+        .drone-info tr:last-child {
+
+            border-bottom: none;
+        }
+
+
+        /* LABELS */
+
+        .drone-info th {
+
+            color: #bae6fd !important;
+
+            background: transparent !important;
+
+            padding: 15px 8px;
+
+            font-weight: 600;
+
+            border: none !important;
+
+            font-size: 16px;
+        }
+
+
+        /* VALUES */
+
+        .drone-info td {
+
+            background: transparent !important;
+
+            padding: 15px 8px;
+
+            text-align: right;
+
+            font-weight: 800;
+
+            font-size: 18px;
+
+            border: none !important;
+        }
+
+
+        /* =========================================
+           INDIVIDUAL VALUE COLORS
+        ========================================= */
+
+        /* Altitude */
+
+        .drone-info tr:nth-child(1) td {
+
+            color: #22d3ee !important;
+
+            text-shadow:
+                0 0 10px rgba(34,211,238,0.35);
+        }
+
+
+        /* Coverage */
+
+        .drone-info tr:nth-child(2) td {
+
+            color: #60a5fa !important;
+
+            text-shadow:
+                0 0 10px rgba(96,165,250,0.35);
+        }
+
+
+        /* Battery */
+
+        .drone-info tr:nth-child(3) td {
+
+            color: #4ade80 !important;
+
+            text-shadow:
+                0 0 10px rgba(74,222,128,0.35);
+        }
+
+
+        /* Camera */
+
+        .drone-info tr:nth-child(4) td {
+
+            color: #facc15 !important;
+
+            text-shadow:
+                0 0 10px rgba(250,204,21,0.35);
+        }
+
+
+        /* GPS */
+
+        .drone-info tr:nth-child(5) td {
+
+            color: #4ade80 !important;
+
+            text-shadow:
+                0 0 10px rgba(74,222,128,0.35);
+        }
+
+
+        /* =========================================
+           GPS STATUS
+        ========================================= */
+
+        .gps-connected {
+
+            color: #4ade80 !important;
+
+            font-weight: 800;
+        }
+
+
+        /* =========================================
+           AI DETECTION LIST
+        ========================================= */
+
+        .detection-list {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin: 0;
+        }
+
+
+        .detection-list li {
+
+            background:
+                rgba(255,255,255,0.08);
+
+            border:
+                1px solid rgba(255,255,255,0.08);
+
+            padding: 13px 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 10px;
+
+            color: #e0f2fe;
+
+            transition: 0.3s ease;
+        }
+
+
+        .detection-list li:hover {
+
+            background:
+                rgba(34,211,238,0.12);
+
+            transform:
+                translateX(5px);
+        }
+
+
+        .check {
+
+            color: #22d3ee;
+
+            font-weight: bold;
+
+            margin-right: 8px;
+        }
+
+
+        /* =========================================
+           TODAY'S FLIGHT
+        ========================================= */
+
+        .flight-row {
+
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            padding: 14px 5px;
+
+            border-bottom:
+                1px solid rgba(255,255,255,0.12);
+
+            color: #dbeafe;
+        }
+
+
+        .flight-row:last-child {
+
+            border-bottom: none;
+        }
+
+
+        .flight-value {
+
+            color: #ffffff;
+
+            font-weight: 800;
+
+            font-size: 17px;
+        }
+
+
+        .critical {
+
+            color: #fb7185 !important;
+        }
+
+
+        .medium {
+
+            color: #facc15 !important;
+        }
+
+
+        .healthy {
+
+            color: #4ade80 !important;
+        }
+
+
+        /* =========================================
+           MAIN CONTAINER
+        ========================================= */
+
+        .drone-container {
+
+            padding-bottom: 50px;
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 768px) {
+
+            .drone-card {
+
+                padding: 20px;
+            }
+
+            .page-title {
+
+                font-size: 25px;
+            }
+
+            .drone-info th,
+            .drone-info td {
+
+                font-size: 15px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     NAVIGATION
+========================================= -->
+
+<nav class="navbar navbar-dark drone-navbar">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="/dashboard"
+        >
+
+            🚁 Drone Heritage Monitoring
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<div class="container drone-container mt-5">
+
+
+    <!-- PAGE TITLE -->
+
+    <h2 class="text-center mb-5 page-title">
+
+        🚁 Drone Image Monitoring System
+
+    </h2>
+
+
+
+    <!-- =====================================
+         TOP ROW
+    ====================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- UPLOAD DRONE IMAGE -->
+
+        <div class="col-lg-6">
+
+            <div class="drone-card">
+
+                <h4>
+
+                    📤 Upload Drone Image
+
+                </h4>
+
+
+                <form
+                    action="/drone-analyze"
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+
+                    <div class="upload-area">
+
+
+                        <div class="upload-icon">
+
+                            🚁
+
+                        </div>
+
+
+                        <p class="upload-text">
+
+                            Upload an aerial image captured by
+                            the heritage monitoring drone.
+
+                        </p>
+
+
+                        <input
+                            type="file"
+                            name="drone_image"
+                            class="form-control"
+                            accept="image/*"
+                            required
+                        >
+
+
+                    </div>
+
+
+                    <button
+                        type="submit"
+                        class="analyze-btn mt-4"
+                    >
+
+                        🔍 Analyze Drone Image
+
+                    </button>
+
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             DRONE INFORMATION
+        ================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="drone-card">
+
+
+                <h4>
+
+                    📊 Drone Information
+
+                </h4>
+
+
+                <table class="drone-info">
+
+
+                    <tr>
+
+                        <th>
+
+                            Altitude
+
+                        </th>
+
+                        <td>
+
+                            120 m
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+
+                            Coverage
+
+                        </th>
+
+                        <td>
+
+                            2.4 km²
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+
+                            Battery
+
+                        </th>
+
+                        <td>
+
+                            84%
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+
+                            Camera
+
+                        </th>
+
+                        <td>
+
+                            48 MP
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+
+                            GPS
+
+                        </th>
+
+                        <td class="gps-connected">
+
+                            ● Connected
+
+                        </td>
+
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================
+         BOTTOM ROW
+    ====================================== -->
+
+    <div class="row g-4 mt-1">
+
+
+        <!-- =================================
+             AI DRONE DETECTION
+        ================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="drone-card">
+
+
+                <h4>
+
+                    🤖 AI Drone Detection
+
+                </h4>
+
+
+                <ul class="detection-list">
+
+
+                    <li>
+
+                        <span class="check">
+
+                            ✓
+
+                        </span>
+
+                        Structural Crack
+
+                    </li>
+
+
+                    <li>
+
+                        <span class="check">
+
+                            ✓
+
+                        </span>
+
+                        Water Damage
+
+                    </li>
+
+
+                    <li>
+
+                        <span class="check">
+
+                            ✓
+
+                        </span>
+
+                        Roof Damage
+
+                    </li>
+
+
+                    <li>
+
+                        <span class="check">
+
+                            ✓
+
+                        </span>
+
+                        Vegetation Growth
+
+                    </li>
+
+
+                    <li>
+
+                        <span class="check">
+
+                            ✓
+
+                        </span>
+
+                        Surface Erosion
+
+                    </li>
+
+
+                </ul>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- =================================
+             TODAY'S FLIGHT
+        ================================== -->
+
+        <div class="col-lg-6">
+
+            <div class="drone-card">
+
+
+                <h4>
+
+                    📈 Today's Flight
+
+                </h4>
+
+
+                <div class="flight-row">
+
+                    <span>
+
+                        Images Captured
+
+                    </span>
+
+                    <span class="flight-value">
+
+                        342
+
+                    </span>
+
+                </div>
+
+
+                <div class="flight-row">
+
+                    <span>
+
+                        Images Processed
+
+                    </span>
+
+                    <span class="flight-value">
+
+                        342
+
+                    </span>
+
+                </div>
+
+
+                <div class="flight-row">
+
+                    <span>
+
+                        Critical Alerts
+
+                    </span>
+
+                    <span class="flight-value critical">
+
+                        4
+
+                    </span>
+
+                </div>
+
+
+                <div class="flight-row">
+
+                    <span>
+
+                        Medium Alerts
+
+                    </span>
+
+                    <span class="flight-value medium">
+
+                        11
+
+                    </span>
+
+                </div>
+
+
+                <div class="flight-row">
+
+                    <span>
+
+                        Healthy Areas
+
+                    </span>
+
+                    <span class="flight-value healthy">
+
+                        327
+
+                    </span>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

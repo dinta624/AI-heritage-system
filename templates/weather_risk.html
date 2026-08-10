@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Climate Risk Prediction</title>
+
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        /* ================================
+           MAIN BACKGROUND
+        ================================= */
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            color: white;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(0, 255, 255, 0.25),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(0, 120, 255, 0.30),
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a,
+                    #1e3a5f
+                );
+
+            overflow-x: hidden;
+
+        }
+
+
+        /* ================================
+           GLOW EFFECTS
+        ================================= */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 400px;
+
+            height: 400px;
+
+            background: rgba(0, 255, 255, 0.12);
+
+            filter: blur(100px);
+
+            top: 5%;
+
+            left: 5%;
+
+            animation: glowMove 8s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            width: 350px;
+
+            height: 350px;
+
+            background: rgba(0, 100, 255, 0.18);
+
+            filter: blur(100px);
+
+            bottom: 5%;
+
+            right: 5%;
+
+            animation: glowMove2 10s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        @keyframes glowMove {
+
+            from {
+
+                transform: translate(0, 0);
+
+            }
+
+            to {
+
+                transform: translate(120px, 70px);
+
+            }
+
+        }
+
+
+        @keyframes glowMove2 {
+
+            from {
+
+                transform: translate(0, 0);
+
+            }
+
+            to {
+
+                transform: translate(-100px, -60px);
+
+            }
+
+        }
+
+
+        /* ================================
+           MAIN CONTAINER
+        ================================= */
+
+        .container {
+
+            animation: fadeUp 0.8s ease;
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(25px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        /* ================================
+           PAGE HEADING
+        ================================= */
+
+        h2 {
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            text-align: center;
+
+            margin-bottom: 25px;
+
+            background: linear-gradient(
+                90deg,
+                #22d3ee,
+                #60a5fa
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+        }
+
+
+        /* ================================
+           GLASS CARDS
+        ================================= */
+
+        .card {
+
+            background: rgba(255, 255, 255, 0.10);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            border-radius: 22px;
+
+            border: 1px solid rgba(255, 255, 255, 0.18);
+
+            box-shadow:
+                0 15px 40px rgba(0, 0, 0, 0.40),
+                inset 0 0 20px rgba(255, 255, 255, 0.04);
+
+            color: white;
+
+            transition: 0.3s ease;
+
+        }
+
+
+        .card:hover {
+
+            transform: translateY(-5px);
+
+            box-shadow:
+                0 20px 45px rgba(0, 0, 0, 0.50),
+                0 0 25px rgba(34, 211, 238, 0.15);
+
+        }
+
+
+        /* ================================
+           CARD HEADINGS
+        ================================= */
+
+        h4 {
+
+            color: #67e8f9;
+
+            font-weight: 700;
+
+            margin-bottom: 20px;
+
+        }
+
+
+        h5 {
+
+            color: white;
+
+            font-weight: 700;
+
+        }
+
+
+        /* ================================
+           RISK VALUES
+        ================================= */
+
+        .risk-item {
+
+            background: rgba(255, 255, 255, 0.08);
+
+            border: 1px solid rgba(255, 255, 255, 0.10);
+
+            padding: 12px 15px;
+
+            border-radius: 10px;
+
+            margin-bottom: 12px;
+
+            color: #f8fafc;
+
+            font-size: 17px;
+
+        }
+
+
+        /* ================================
+           HIGH RISK
+        ================================= */
+
+        .high-risk {
+
+            color: #ff6b6b;
+
+            font-weight: 700;
+
+        }
+
+
+        /* ================================
+           RECOMMENDATION LIST
+        ================================= */
+
+        ul {
+
+            padding-left: 20px;
+
+        }
+
+
+        li {
+
+            color: #f1f5f9;
+
+            margin-bottom: 12px;
+
+            font-size: 16px;
+
+        }
+
+
+        li::marker {
+
+            color: #22d3ee;
+
+        }
+
+
+        /* ================================
+           RISK BADGE
+        ================================= */
+
+        .risk-badge {
+
+            display: inline-block;
+
+            padding: 6px 15px;
+
+            border-radius: 20px;
+
+            background: rgba(220, 53, 69, 0.20);
+
+            border: 1px solid rgba(255, 100, 100, 0.40);
+
+            color: #ff6b6b;
+
+            font-weight: 700;
+
+        }
+
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container mt-5 mb-5">
+
+
+    <!-- PAGE TITLE -->
+
+    <h2>
+        🌦 Weather & Climate Risk Prediction
+    </h2>
+
+
+
+    <!-- CURRENT RISK ANALYSIS -->
+
+    <div class="card p-4 mt-4">
+
+
+        <h4>
+            🌍 Current Risk Analysis
+        </h4>
+
+
+        <div class="risk-item">
+            🌧 Rainfall Impact:
+            <strong>Medium</strong>
+        </div>
+
+
+        <div class="risk-item">
+            ☀ Temperature Risk:
+            <strong>High</strong>
+        </div>
+
+
+        <div class="risk-item">
+            💨 Pollution Level:
+            <strong>Moderate</strong>
+        </div>
+
+
+        <div class="risk-item">
+            🌊 Water Damage Probability:
+            <strong>65%</strong>
+        </div>
+
+
+
+        <h5 class="mt-4">
+
+            Overall Climate Risk:
+
+            <span class="risk-badge">
+                HIGH
+            </span>
+
+        </h5>
+
+
+    </div>
+
+
+
+    <!-- AI RECOMMENDATION -->
+
+    <div class="card p-4 mt-4">
+
+
+        <h4>
+            🤖 AI Recommendation
+        </h4>
+
+
+        <ul>
+
+            <li>
+                Apply waterproof coating
+            </li>
+
+            <li>
+                Increase inspection frequency
+            </li>
+
+            <li>
+                Monitor erosion areas
+            </li>
+
+            <li>
+                Schedule maintenance before monsoon
+            </li>
+
+        </ul>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

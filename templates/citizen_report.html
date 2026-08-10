@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Citizen Reporting</title>
+
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        /* ==============================
+           MAIN BACKGROUND
+        ============================== */
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            color: white;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(0, 255, 255, 0.25),
+                    transparent 35%
+                ),
+
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(0, 120, 255, 0.30),
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a,
+                    #1e3a5f
+                );
+
+            overflow-x: hidden;
+
+        }
+
+
+        /* ==============================
+           GLOWING BACKGROUND
+        ============================== */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 400px;
+
+            height: 400px;
+
+            background: rgba(0, 255, 255, 0.12);
+
+            filter: blur(100px);
+
+            top: 5%;
+
+            left: 5%;
+
+            animation: glowMove 8s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            width: 350px;
+
+            height: 350px;
+
+            background: rgba(0, 100, 255, 0.18);
+
+            filter: blur(100px);
+
+            bottom: 5%;
+
+            right: 5%;
+
+            animation: glowMove2 10s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        @keyframes glowMove {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(120px, 70px);
+            }
+
+        }
+
+
+        @keyframes glowMove2 {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(-100px, -60px);
+            }
+
+        }
+
+
+        /* ==============================
+           CONTAINER ANIMATION
+        ============================== */
+
+        .container {
+
+            animation: fadeUp 0.8s ease;
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(25px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        /* ==============================
+           PAGE HEADING
+        ============================== */
+
+        h2 {
+
+            text-align: center;
+
+            font-weight: 700;
+
+            letter-spacing: 1px;
+
+            margin-bottom: 30px;
+
+            background: linear-gradient(
+                90deg,
+                #22d3ee,
+                #60a5fa
+            );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+        }
+
+
+        /* ==============================
+           FORM CARD
+        ============================== */
+
+        .report-card {
+
+            max-width: 750px;
+
+            margin: auto;
+
+            padding: 35px;
+
+            background: rgba(255, 255, 255, 0.10);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            border-radius: 25px;
+
+            border: 1px solid rgba(255,255,255,0.18);
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.40),
+                inset 0 0 20px rgba(255,255,255,0.04);
+
+        }
+
+
+        /* ==============================
+           FORM LABELS
+        ============================== */
+
+        label {
+
+            color: #bae6fd;
+
+            font-weight: 600;
+
+            margin-bottom: 8px;
+
+        }
+
+
+        /* ==============================
+           INPUTS
+        ============================== */
+
+        .form-control {
+
+            background: rgba(255,255,255,0.10) !important;
+
+            border: 1px solid rgba(255,255,255,0.20) !important;
+
+            color: white !important;
+
+            border-radius: 10px;
+
+            padding: 12px;
+
+        }
+
+
+        .form-control::placeholder {
+
+            color: rgba(255,255,255,0.55);
+
+        }
+
+
+        .form-control:focus {
+
+            background: rgba(255,255,255,0.14) !important;
+
+            border-color: #22d3ee !important;
+
+            box-shadow:
+                0 0 15px rgba(34,211,238,0.20) !important;
+
+            color: white !important;
+
+        }
+
+
+        /* ==============================
+           SELECT OPTIONS
+        ============================== */
+
+        select.form-control option {
+
+            background: #0f172a;
+
+            color: white;
+
+        }
+
+
+        /* ==============================
+           FILE UPLOAD
+        ============================== */
+
+        input[type="file"] {
+
+            color: #dbeafe !important;
+
+        }
+
+
+        .form-control::file-selector-button {
+
+            background: #22d3ee;
+
+            color: #020617;
+
+            border: none;
+
+            padding: 8px 15px;
+
+            margin-right: 10px;
+
+            border-radius: 7px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* ==============================
+           DESCRIPTION
+        ============================== */
+
+        textarea {
+
+            resize: vertical;
+
+            min-height: 120px;
+
+        }
+
+
+        /* ==============================
+           SUBMIT BUTTON
+        ============================== */
+
+        .submit-btn {
+
+            border: none;
+
+            border-radius: 30px;
+
+            padding: 13px 35px;
+
+            font-weight: 700;
+
+            color: white;
+
+            background: linear-gradient(
+                135deg,
+                #ef4444,
+                #dc2626
+            );
+
+            box-shadow:
+                0 8px 20px rgba(220,38,38,0.25);
+
+            transition: 0.3s ease;
+
+        }
+
+
+        .submit-btn:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 0 25px rgba(239,68,68,0.55);
+
+        }
+
+
+        /* ==============================
+           REPORT ICON
+        ============================== */
+
+        .report-icon {
+
+            text-align: center;
+
+            font-size: 50px;
+
+            margin-bottom: 10px;
+
+        }
+
+
+        /* ==============================
+           RESPONSIVE
+        ============================== */
+
+        @media (max-width: 768px) {
+
+            .report-card {
+
+                padding: 25px;
+
+            }
+
+            h2 {
+
+                font-size: 25px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container mt-5 mb-5">
+
+
+    <!-- REPORT CARD -->
+
+    <div class="report-card">
+
+
+        <div class="report-icon">
+
+            📢
+
+        </div>
+
+
+        <h2>
+
+            Citizen Damage Reporting Portal
+
+        </h2>
+
+
+
+        <form>
+
+
+            <!-- MONUMENT NAME -->
+
+            <label class="mt-3">
+
+                🏛️ Monument Name
+
+            </label>
+
+
+            <input
+                type="text"
+                class="form-control"
+                placeholder="Enter monument name"
+            >
+
+
+
+            <!-- DAMAGE TYPE -->
+
+            <label class="mt-4">
+
+                ⚠️ Damage Type
+
+            </label>
+
+
+            <select class="form-control">
+
+
+                <option>
+                    Crack
+                </option>
+
+
+                <option>
+                    Water Damage
+                </option>
+
+
+                <option>
+                    Vandalism
+                </option>
+
+
+                <option>
+                    Littering
+                </option>
+
+
+            </select>
+
+
+
+            <!-- EVIDENCE PHOTO -->
+
+            <label class="mt-4">
+
+                📷 Upload Evidence Photo
+
+            </label>
+
+
+            <input
+                type="file"
+                class="form-control"
+                accept="image/*"
+            >
+
+
+
+            <!-- DESCRIPTION -->
+
+            <label class="mt-4">
+
+                📝 Description
+
+            </label>
+
+
+            <textarea
+                class="form-control"
+                rows="4"
+                placeholder="Describe the damage you observed..."
+            ></textarea>
+
+
+
+            <!-- SUBMIT -->
+
+            <div class="text-center mt-4">
+
+                <button
+                    type="submit"
+                    class="submit-btn"
+                >
+
+                    🚨 Submit Report
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Heritage Sites</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            background:
+                radial-gradient(
+                    circle at top left,
+                    rgba(0, 255, 255, 0.22),
+                    transparent 35%
+                ),
+                radial-gradient(
+                    circle at bottom right,
+                    rgba(0, 100, 255, 0.25),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a,
+                    #1e3a5f
+                );
+
+            color: white;
+
+            overflow-x: hidden;
+        }
+
+
+        /* Background glowing effects */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 450px;
+            height: 450px;
+
+            background: rgba(0, 255, 255, 0.12);
+
+            filter: blur(110px);
+
+            top: 5%;
+            left: 5%;
+
+            z-index: -1;
+
+        }
+
+
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            width: 400px;
+            height: 400px;
+
+            background: rgba(0, 100, 255, 0.18);
+
+            filter: blur(110px);
+
+            bottom: 5%;
+            right: 5%;
+
+            z-index: -1;
+
+        }
+
+
+        /* Main heading */
+
+        .page-title {
+
+            text-align: center;
+
+            margin-top: 35px;
+
+            font-size: 42px;
+
+            font-weight: 800;
+
+            background: linear-gradient(
+                90deg,
+                #22d3ee,
+                #60a5fa
+            );
+
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+
+        }
+
+
+        .page-subtitle {
+
+            text-align: center;
+
+            color: #cbd5e1;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* Search */
+
+        .search-box {
+
+            max-width: 500px;
+
+            margin: 0 auto 35px auto;
+
+        }
+
+
+        .search-box input {
+
+            width: 100%;
+
+            padding: 15px 22px;
+
+            border-radius: 30px;
+
+            border: 1px solid rgba(255,255,255,0.2);
+
+            background: rgba(255,255,255,0.10);
+
+            backdrop-filter: blur(15px);
+
+            color: white;
+
+            outline: none;
+
+        }
+
+
+        .search-box input::placeholder {
+
+            color: #cbd5e1;
+
+        }
+
+
+        .search-box input:focus {
+
+            border-color: #22d3ee;
+
+            box-shadow:
+                0 0 20px rgba(34,211,238,0.25);
+
+        }
+
+
+        /* Cards */
+
+        .heritage-card {
+
+            height: 100%;
+
+            background: rgba(255,255,255,0.10);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 20px;
+
+            overflow: hidden;
+
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.35);
+
+            transition: 0.35s ease;
+
+        }
+
+
+        .heritage-card:hover {
+
+            transform: translateY(-8px);
+
+            box-shadow:
+                0 20px 50px rgba(34,211,238,0.25);
+
+            border-color: rgba(34,211,238,0.45);
+
+        }
+
+
+        /* Monument image */
+
+        .monument-image {
+
+            width: 100%;
+
+            height: 220px;
+
+            object-fit: cover;
+
+            display: block;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a5f
+                );
+
+        }
+
+
+        /* Image loading */
+
+        .image-loading {
+
+            height: 220px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            color: #94a3b8;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #0f172a,
+                    #1e3a5f
+                );
+
+        }
+
+
+        .card-body {
+
+            padding: 20px;
+
+        }
+
+
+        .monument-name {
+
+            color: #22d3ee;
+
+            font-size: 22px;
+
+            font-weight: 700;
+
+            margin-bottom: 12px;
+
+        }
+
+
+        .info-row {
+
+            margin-bottom: 8px;
+
+            color: #e2e8f0;
+
+        }
+
+
+        .info-label {
+
+            font-weight: 600;
+
+            color: #ffffff;
+
+        }
+
+
+        /* Status badges */
+
+        .status {
+
+            display: inline-block;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        .healthy {
+
+            background: rgba(25,135,84,0.25);
+
+            color: #4ade80;
+
+            border: 1px solid rgba(74,222,128,0.4);
+
+        }
+
+
+        .observation {
+
+            background: rgba(255,193,7,0.20);
+
+            color: #facc15;
+
+            border: 1px solid rgba(250,204,21,0.4);
+
+        }
+
+
+        .critical {
+
+            background: rgba(220,53,69,0.22);
+
+            color: #fb7185;
+
+            border: 1px solid rgba(251,113,133,0.4);
+
+        }
+
+
+        /* Details button */
+
+        .details-button {
+
+            width: 100%;
+
+            margin-top: 12px;
+
+            padding: 11px;
+
+            border: none;
+
+            border-radius: 30px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #06b6d4,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-weight: 600;
+
+            transition: 0.3s ease;
+
+        }
+
+
+        .details-button:hover {
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 0 25px rgba(34,211,238,0.55);
+
+        }
+
+
+        /* Footer */
+
+        .footer {
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            padding: 40px 0;
+
+        }
+
+
+        /* Mobile */
+
+        @media (max-width: 768px) {
+
+            .page-title {
+
+                font-size: 32px;
+
+            }
+
+            .monument-image {
+
+                height: 200px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="container-fluid px-4">
+
+
+    <!-- Heading -->
+
+    <h1 class="page-title">
+
+        🏛️ Heritage Sites
+
+    </h1>
+
+
+    <p class="page-subtitle">
+
+        AI-Powered Heritage Site Health & Monitoring
+
+    </p>
+
+
+    <!-- Search -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="🔍 Search Heritage Monument..."
+            onkeyup="searchMonuments()"
+        >
+
+    </div>
+
+
+    <!-- Monument Cards -->
+
+    <div class="container">
+
+        <div class="row g-4" id="monumentContainer">
+
+
+            <!-- 1. Taj Mahal -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Taj Mahal"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-taj"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Taj Mahal
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            92%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status healthy">
+                                Healthy
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Taj Mahal')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 2. Red Fort -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Red Fort"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-redfort"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Red Fort
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            88%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status observation">
+                                Under Observation
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Red Fort')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 3. Brihadishvara Temple -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Brihadishvara Temple"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-brihadishvara"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Brihadishvara Temple
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            86%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status healthy">
+                                Healthy
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Brihadishvara Temple')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 4. Qutub Minar -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Qutub Minar"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-qutub"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Qutub Minar
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            81%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status observation">
+                                Under Observation
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Qutub Minar')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 5. Konark Sun Temple -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Konark Sun Temple"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-konark"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Konark Sun Temple
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            69%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status critical">
+                                Critical
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Konark Sun Temple')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 6. Mysore Palace -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Mysore Palace"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-mysore"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Mysore Palace
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            94%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status healthy">
+                                Healthy
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Mysore Palace')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 7. Gateway of India -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Gateway of India"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-gateway"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Gateway of India
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            83%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status observation">
+                                Under Observation
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Gateway of India')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 8. Hampi -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Hampi"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-hampi"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Hampi
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            78%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status observation">
+                                Under Observation
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Hampi')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 9. Sanchi Stupa -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Sanchi Stupa"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-sanchi"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Sanchi Stupa
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            89%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status healthy">
+                                Healthy
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Sanchi Stupa')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- 10. Charminar -->
+
+            <div
+                class="col-lg-4 col-md-6 monument-item"
+                data-name="Charminar"
+            >
+
+                <div class="heritage-card">
+
+                    <div
+                        class="image-loading"
+                        id="image-charminar"
+                    >
+                        Loading image...
+                    </div>
+
+                    <div class="card-body">
+
+                        <div class="monument-name">
+                            Charminar
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Health Score:
+                            </span>
+                            84%
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">
+                                Status:
+                            </span>
+
+                            <span class="status observation">
+                                Under Observation
+                            </span>
+
+                        </div>
+
+                        <button
+                            class="details-button"
+                            onclick="viewDetails('Charminar')"
+                        >
+                            🔍 View Details
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <div class="footer">
+
+        AI Heritage System • Heritage Preservation & Monitoring
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+    /*
+       Wikimedia Commons image search
+
+       This automatically finds an actual image
+       for each monument instead of relying on
+       missing local image files.
+    */
+
+    async function loadMonumentImage(
+        searchText,
+        elementId
+    ) {
+
+        const container =
+            document.getElementById(elementId);
+
+
+        try {
+
+            const apiUrl =
+                "https://commons.wikimedia.org/w/api.php" +
+                "?action=query" +
+                "&generator=search" +
+                "&gsrsearch=" +
+                encodeURIComponent(
+                    searchText + " India"
+                ) +
+                "&gsrnamespace=6" +
+                "&gsrlimit=1" +
+                "&prop=imageinfo" +
+                "&iiprop=url" +
+                "&format=json" +
+                "&origin=*";
+
+
+            const response =
+                await fetch(apiUrl);
+
+
+            const data =
+                await response.json();
+
+
+            const pages =
+                data.query &&
+                data.query.pages;
+
+
+            if (pages) {
+
+                const page =
+                    Object.values(pages)[0];
+
+
+                if (
+                    page &&
+                    page.imageinfo &&
+                    page.imageinfo[0]
+                ) {
+
+                    const imageUrl =
+                        page.imageinfo[0].url;
+
+
+                    container.innerHTML = "";
+
+
+                    const image =
+                        document.createElement("img");
+
+
+                    image.src = imageUrl;
+
+                    image.alt = searchText;
+
+                    image.className =
+                        "monument-image";
+
+
+                    image.onerror = function() {
+
+                        container.innerHTML =
+                            "🏛️ Image unavailable";
+
+                        container.className =
+                            "image-loading";
+
+                    };
+
+
+                    container.appendChild(image);
+
+                    return;
+
+                }
+
+            }
+
+
+            container.innerHTML =
+                "🏛️ Image unavailable";
+
+
+        } catch (error) {
+
+            console.log(
+                "Image loading error:",
+                error
+            );
+
+
+            container.innerHTML =
+                "🏛️ Image unavailable";
+
+        }
+
+    }
+
+
+    /*
+       Load all 10 monument images
+    */
+
+    loadMonumentImage(
+        "Taj Mahal",
+        "image-taj"
+    );
+
+
+    loadMonumentImage(
+        "Red Fort Delhi",
+        "image-redfort"
+    );
+
+
+    loadMonumentImage(
+        "Brihadishvara Temple Thanjavur",
+        "image-brihadishvara"
+    );
+
+
+    loadMonumentImage(
+        "Qutb Minar Delhi",
+        "image-qutub"
+    );
+
+
+    loadMonumentImage(
+        "Konark Sun Temple",
+        "image-konark"
+    );
+
+
+    loadMonumentImage(
+        "Mysore Palace",
+        "image-mysore"
+    );
+
+
+    loadMonumentImage(
+        "Gateway of India Mumbai",
+        "image-gateway"
+    );
+
+
+    loadMonumentImage(
+        "Hampi Karnataka",
+        "image-hampi"
+    );
+
+
+    loadMonumentImage(
+        "Sanchi Stupa",
+        "image-sanchi"
+    );
+
+
+    loadMonumentImage(
+        "Charminar Hyderabad",
+        "image-charminar"
+    );
+
+
+    /*
+       Search function
+    */
+
+    function searchMonuments() {
+
+        const input =
+            document
+            .getElementById("searchInput")
+            .value
+            .toLowerCase();
+
+
+        const cards =
+            document.querySelectorAll(
+                ".monument-item"
+            );
+
+
+        cards.forEach(function(card) {
+
+            const name =
+                card
+                .getAttribute("data-name")
+                .toLowerCase();
+
+
+            if (
+                name.includes(input)
+            ) {
+
+                card.style.display = "";
+
+            } else {
+
+                card.style.display = "none";
+
+            }
+
+        });
+
+    }
+
+
+    /*
+       View Details button
+
+       Sends the selected monument name
+       to your Flask route.
+    */
+
+    function viewDetails(monumentName) {
+
+        window.location.href =
+            "/monument-details?name=" +
+            encodeURIComponent(
+                monumentName
+            );
+
+    }
+
+</script>
+
+
+</body>
+
+</html>

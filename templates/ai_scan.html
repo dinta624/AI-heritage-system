@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Damage Detection</title>
+
+
+    <!-- Bootstrap -->
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+
+    <!-- Google Font -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <style>
+
+        /* =========================================
+           GLOBAL
+        ========================================= */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            min-height: 100vh;
+
+            font-family: 'Poppins', sans-serif;
+
+            color: white;
+
+            overflow-x: hidden;
+
+            background:
+
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(34, 211, 238, 0.20),
+                    transparent 30%
+                ),
+
+                radial-gradient(
+                    circle at 90% 90%,
+                    rgba(37, 99, 235, 0.25),
+                    transparent 35%
+                ),
+
+                linear-gradient(
+                    135deg,
+                    #020617,
+                    #0f172a,
+                    #172554
+                );
+
+        }
+
+
+        /* =========================================
+           ANIMATED GLOW
+        ========================================= */
+
+        body::before {
+
+            content: "";
+
+            position: fixed;
+
+            width: 450px;
+
+            height: 450px;
+
+            border-radius: 50%;
+
+            background: rgba(34, 211, 238, 0.13);
+
+            filter: blur(120px);
+
+            top: -150px;
+
+            left: -150px;
+
+            animation: glowMoveOne 8s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        body::after {
+
+            content: "";
+
+            position: fixed;
+
+            width: 450px;
+
+            height: 450px;
+
+            border-radius: 50%;
+
+            background: rgba(37, 99, 235, 0.16);
+
+            filter: blur(120px);
+
+            bottom: -150px;
+
+            right: -150px;
+
+            animation: glowMoveTwo 10s infinite alternate;
+
+            z-index: -1;
+
+        }
+
+
+        @keyframes glowMoveOne {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(180px, 100px);
+            }
+
+        }
+
+
+        @keyframes glowMoveTwo {
+
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(-150px, -100px);
+            }
+
+        }
+
+
+        /* =========================================
+           NAVBAR
+        ========================================= */
+
+        .navbar {
+
+            background: rgba(2, 6, 23, 0.65) !important;
+
+            backdrop-filter: blur(15px);
+
+            -webkit-backdrop-filter: blur(15px);
+
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+
+            box-shadow:
+                0 5px 25px rgba(0,0,0,0.25);
+
+        }
+
+
+        .navbar-brand {
+
+            color: white !important;
+
+            font-weight: 700;
+
+            letter-spacing: 0.5px;
+
+        }
+
+
+        /* =========================================
+           MAIN CONTAINER
+        ========================================= */
+
+        .main-container {
+
+            max-width: 1200px;
+
+            margin: auto;
+
+            padding: 50px 20px;
+
+            animation: fadeUp 0.8s ease;
+
+        }
+
+
+        @keyframes fadeUp {
+
+            from {
+
+                opacity: 0;
+
+                transform: translateY(30px);
+
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform: translateY(0);
+
+            }
+
+        }
+
+
+        /* =========================================
+           PAGE TITLE
+        ========================================= */
+
+        .page-title {
+
+            text-align: center;
+
+            font-size: 34px;
+
+            font-weight: 700;
+
+            margin-bottom: 10px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #22d3ee,
+                    #60a5fa
+                );
+
+            -webkit-background-clip: text;
+
+            -webkit-text-fill-color: transparent;
+
+        }
+
+
+        .page-subtitle {
+
+            text-align: center;
+
+            color: #cbd5e1;
+
+            margin-bottom: 40px;
+
+            font-size: 14px;
+
+        }
+
+
+        /* =========================================
+           GLASS CARDS
+        ========================================= */
+
+        .ai-card {
+
+            background: rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(18px);
+
+            -webkit-backdrop-filter: blur(18px);
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 22px;
+
+            padding: 28px;
+
+            height: 100%;
+
+            box-shadow:
+
+                0 15px 45px rgba(0,0,0,0.35),
+
+                inset 0 0 20px rgba(255,255,255,0.03);
+
+            transition: 0.35s ease;
+
+        }
+
+
+        .ai-card:hover {
+
+            transform: translateY(-5px);
+
+            border-color:
+                rgba(34,211,238,0.45);
+
+            box-shadow:
+
+                0 20px 50px rgba(0,0,0,0.45),
+
+                0 0 25px rgba(34,211,238,0.12);
+
+        }
+
+
+        .ai-card h4 {
+
+            color: #22d3ee;
+
+            font-weight: 600;
+
+            margin-bottom: 15px;
+
+        }
+
+
+        /* =========================================
+           UPLOAD CARD
+        ========================================= */
+
+        .upload-card {
+
+            border: 1px solid rgba(34,211,238,0.25);
+
+        }
+
+
+        .upload-icon {
+
+            width: 75px;
+
+            height: 75px;
+
+            margin: 0 auto 18px;
+
+            border-radius: 20px;
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            font-size: 35px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #06b6d4,
+                    #2563eb
+                );
+
+            box-shadow:
+
+                0 0 30px
+                rgba(34,211,238,0.35);
+
+        }
+
+
+        .upload-title {
+
+            text-align: center;
+
+            font-size: 20px;
+
+            font-weight: 600;
+
+            color: white;
+
+        }
+
+
+        .upload-description {
+
+            text-align: center;
+
+            color: #94a3b8;
+
+            font-size: 13px;
+
+            margin-bottom: 25px;
+
+        }
+
+
+        /* =========================================
+           FILE INPUT
+        ========================================= */
+
+        .file-input {
+
+            width: 100%;
+
+            padding: 15px;
+
+            border-radius: 14px;
+
+            border: 2px dashed
+                rgba(34,211,238,0.45);
+
+            background:
+                rgba(255,255,255,0.05);
+
+            color: #cbd5e1;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+
+        }
+
+
+        .file-input:hover {
+
+            background:
+                rgba(34,211,238,0.08);
+
+            border-color:
+                #22d3ee;
+
+            box-shadow:
+                0 0 20px
+                rgba(34,211,238,0.15);
+
+        }
+
+
+        .file-input::file-selector-button {
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #06b6d4,
+                    #2563eb
+                );
+
+            color: white;
+
+            border: none;
+
+            padding: 9px 15px;
+
+            border-radius: 8px;
+
+            margin-right: 12px;
+
+            cursor: pointer;
+
+        }
+
+
+        /* =========================================
+           ANALYZE BUTTON
+        ========================================= */
+
+        .analyze-button {
+
+            width: 100%;
+
+            border: none;
+
+            padding: 14px;
+
+            border-radius: 30px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #06b6d4,
+                    #2563eb
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 600;
+
+            cursor: pointer;
+
+            transition: 0.35s;
+
+            box-shadow:
+
+                0 8px 25px
+                rgba(37,99,235,0.30);
+
+        }
+
+
+        .analyze-button:hover {
+
+            transform: translateY(-3px);
+
+            box-shadow:
+
+                0 0 30px
+                rgba(34,211,238,0.55);
+
+        }
+
+
+        /* =========================================
+           SUPPORTED DETECTION
+        ========================================= */
+
+        .detection-list {
+
+            list-style: none;
+
+            padding: 0;
+
+            margin: 0;
+
+        }
+
+
+        .detection-list li {
+
+            padding: 11px 0;
+
+            color: #cbd5e1;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.07);
+
+        }
+
+
+        .detection-list li:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .check {
+
+            color: #22d3ee;
+
+            font-weight: 700;
+
+            margin-right: 8px;
+
+        }
+
+
+        /* =========================================
+           WORKFLOW
+        ========================================= */
+
+        .workflow {
+
+            display: flex;
+
+            flex-direction: column;
+
+            gap: 12px;
+
+        }
+
+
+        .workflow-step {
+
+            display: flex;
+
+            align-items: center;
+
+            padding: 11px;
+
+            border-radius: 12px;
+
+            background:
+                rgba(255,255,255,0.05);
+
+            transition: 0.3s;
+
+        }
+
+
+        .workflow-step:hover {
+
+            background:
+                rgba(34,211,238,0.08);
+
+            transform: translateX(5px);
+
+        }
+
+
+        .step-number {
+
+            width: 32px;
+
+            height: 32px;
+
+            min-width: 32px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            border-radius: 50%;
+
+            margin-right: 12px;
+
+            background:
+
+                linear-gradient(
+                    135deg,
+                    #06b6d4,
+                    #2563eb
+                );
+
+            font-size: 13px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =========================================
+           MODEL TABLE
+        ========================================= */
+
+        .model-table {
+
+            width: 100%;
+
+            color: #cbd5e1;
+
+        }
+
+
+        .model-table tr {
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,0.08);
+
+        }
+
+
+        .model-table tr:last-child {
+
+            border-bottom: none;
+
+        }
+
+
+        .model-table th {
+
+            color: #22d3ee;
+
+            padding: 13px 5px;
+
+        }
+
+
+        .model-table td {
+
+            color: #e2e8f0;
+
+            padding: 13px 5px;
+
+        }
+
+
+        /* =========================================
+           STATUS BADGE
+        ========================================= */
+
+        .ai-status {
+
+            display: inline-block;
+
+            padding: 5px 12px;
+
+            border-radius: 20px;
+
+            background:
+                rgba(34,211,238,0.12);
+
+            color: #22d3ee;
+
+            font-size: 11px;
+
+            font-weight: 600;
+
+        }
+
+
+        /* =========================================
+           FOOTER
+        ========================================= */
+
+        .ai-footer {
+
+            text-align: center;
+
+            margin-top: 45px;
+
+            color: #64748b;
+
+            font-size: 12px;
+
+        }
+
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 768px) {
+
+            .main-container {
+
+                padding: 35px 15px;
+
+            }
+
+
+            .page-title {
+
+                font-size: 27px;
+
+            }
+
+
+            .ai-card {
+
+                padding: 22px;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     NAVBAR
+========================================= -->
+
+<nav class="navbar navbar-dark">
+
+    <div class="container">
+
+        <a
+            class="navbar-brand"
+            href="/dashboard"
+        >
+
+            🏛 AI Heritage Monitoring System
+
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- =========================================
+     MAIN CONTENT
+========================================= -->
+
+<div class="main-container">
+
+
+    <!-- PAGE TITLE -->
+
+    <h1 class="page-title">
+
+        🤖 AI Monument Damage Detection
+
+    </h1>
+
+
+    <p class="page-subtitle">
+
+        Upload a monument image and let our AI analyze
+        structural and surface damage.
+
+    </p>
+
+
+
+    <!-- =====================================
+         FIRST ROW
+    ====================================== -->
+
+    <div class="row g-4">
+
+
+        <!-- UPLOAD -->
+
+        <div class="col-lg-6">
+
+
+            <div class="ai-card upload-card">
+
+
+                <div class="upload-icon">
+
+                    🤖
+
+                </div>
+
+
+                <h3 class="upload-title">
+
+                    Upload Monument Image
+
+                </h3>
+
+
+                <p class="upload-description">
+
+                    Select a clear image of the heritage monument
+                    for AI-powered damage analysis.
+
+                </p>
+
+
+                <form
+                    action="/analyze"
+                    method="POST"
+                    enctype="multipart/form-data"
+                >
+
+
+                    <input
+                        type="file"
+                        name="image"
+                        class="file-input"
+                        accept="image/*"
+                        required
+                    >
+
+
+                    <button
+                        type="submit"
+                        class="analyze-button mt-4"
+                    >
+
+                        🔍 Analyze Image
+
+                    </button>
+
+
+                </form>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- SUPPORTED DETECTION -->
+
+        <div class="col-lg-6">
+
+
+            <div class="ai-card">
+
+
+                <h4>
+
+                    🧠 Supported AI Detection
+
+                </h4>
+
+
+                <ul class="detection-list">
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Structural Crack Detection
+                    </li>
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Surface Erosion Detection
+                    </li>
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Water Damage Detection
+                    </li>
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Stone Displacement
+                    </li>
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Vegetation Growth Detection
+                    </li>
+
+
+                    <li>
+                        <span class="check">✔</span>
+                        Color Fading Analysis
+                    </li>
+
+
+                </ul>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- =====================================
+         SECOND ROW
+    ====================================== -->
+
+    <div class="row g-4 mt-1">
+
+
+        <!-- AI WORKFLOW -->
+
+        <div class="col-lg-6">
+
+
+            <div class="ai-card">
+
+
+                <h4>
+
+                    ⚙️ AI Analysis Workflow
+
+                </h4>
+
+
+                <div class="workflow">
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            1
+                        </div>
+
+                        <span>
+                            Upload Image
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            2
+                        </div>
+
+                        <span>
+                            Image Preprocessing
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            3
+                        </div>
+
+                        <span>
+                            Feature Extraction
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            4
+                        </div>
+
+                        <span>
+                            Damage Classification
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            5
+                        </div>
+
+                        <span>
+                            Health Score Calculation
+                        </span>
+
+                    </div>
+
+
+                    <div class="workflow-step">
+
+                        <div class="step-number">
+                            6
+                        </div>
+
+                        <span>
+                            Maintenance Recommendation
+                        </span>
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- MODEL INFORMATION -->
+
+        <div class="col-lg-6">
+
+
+            <div class="ai-card">
+
+
+                <h4>
+
+                    🧬 AI Model Information
+
+                </h4>
+
+
+                <table class="model-table">
+
+
+                    <tr>
+
+                        <th>
+                            Technology
+                        </th>
+
+                        <td>
+                            Computer Vision
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+                            Framework
+                        </th>
+
+                        <td>
+                            OpenCV + CNN
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+                            Detection Speed
+                        </th>
+
+                        <td>
+                            2.3 Seconds
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+                            Accuracy
+                        </th>
+
+                        <td>
+
+                            <span class="ai-status">
+
+                                95% Prototype
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                    <tr>
+
+                        <th>
+                            System Status
+                        </th>
+
+                        <td>
+
+                            <span class="ai-status">
+
+                                ● AI Ready
+
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+
+                </table>
+
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- FOOTER -->
+
+    <div class="ai-footer">
+
+        🤖 AI-Powered Heritage Preservation
+        &nbsp; | &nbsp;
+        🏛 Protecting India's Cultural Heritage
+
+    </div>
+
+
+</div>
+
+
+
+</body>
+
+</html>
